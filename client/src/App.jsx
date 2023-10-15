@@ -1,10 +1,27 @@
-import {Days, Staffs, Works} from './data.js'
+import { useEffect, useMemo, useState } from 'react'
+import { Days, Staffs, Works } from './data.js'
 import './App.css'
-import {useMemo, useState} from "react";
 
 function App() {
+  /** Shift */
   const [shifts, setShifts] = useState([])
+  /** Edit mode status */
   const [isEditMode, setIsEditMode] = useState(false)
+
+  useEffect(() => {
+    initData()
+      .catch(console.error)
+  }, [])
+
+  /**
+   * Initialize saved shift
+   */
+  const initData = async () => {
+    const res = await fetch('/api/load')
+    const resJson = await res.json()
+    console.log('run?', resJson)
+    setShifts(resJson?.data || [])
+  }
 
   const staffAndWorkMap = useMemo(() => {
     const result = {}
@@ -70,13 +87,25 @@ function App() {
     setShifts(newShifts)
   }
 
+  /**
+   * Change to edit mode
+   */
   const openEditMode = () => {
     setIsEditMode(true)
   }
 
+  /**
+   * Save current state of shift
+   * @return {Promise<void>}
+   */
   const saveShift = async () => {
     const response = await fetch('/api/save', {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ shifts, })
     })
     const resJson = await response.json()
 
@@ -85,6 +114,7 @@ function App() {
 
   return (
     <div>
+      {/* Actions */}
       <div>
         <button
           type='button'
@@ -110,6 +140,7 @@ function App() {
       <div>
         {JSON.stringify(shifts, null, 2)}
       </div>
+      {/* Schedule section */}
       <section>
         <h2>
           Schedule
@@ -154,6 +185,7 @@ function App() {
           </tbody>
         </table>
       </section>
+      {/* Load section */}
       <section>
         <h2>
           Load

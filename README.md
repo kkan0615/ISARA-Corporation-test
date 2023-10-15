@@ -12,8 +12,7 @@ npm run dev
 npm run build
 ```
 
-### Production
-Before you start production, you should build first.
+### Production Start
 ```bash
 npm run start
 ```
@@ -30,12 +29,12 @@ npm run start
 - [v] Server serves a ReactJS page which is static, but similar in shape to the above. Components are preferred a single render function building everything.
 - [v] ReactJS page where each X above is replaced with some HTML control allowing a staff  member to be selected for a slot.
 - [v] 4 ReactJS page displays all staff in the Load section, with their number of slots correct for each day, and the correct total for the week
-- [] ReactJS page prevents – or displays warning – when a staff member is in consecutive lunch slots on the same day.
-- [] ReactJS page prevents – or displays warning – when a staff member has more than 2 shifts per day
-- [] ReactJS page prevents – or displays warning – when a staff member has more than 7 shifts per week
-- [] ReactJS page prevents – or displays warning – when a staff member is selected to be in two places at once. (eg: UpStairs and Parking Lot)
-- [] ReactJS page allows randomised population of currently empty shifts, respecting the above rules. At this level, clearing all shifts should be supported too.
-- [] ReactJS page reports how many staff members are needed to fill all shifts, respecting the above rules.
-- [] ReactJS page stores current progress at the server (globally)
-- [] ReactJS page can retrieve current state when re-opened (globally)
+- [v] ReactJS page prevents – or displays warning – when a staff member is in consecutive lunch slots on the same day.
+- [v] ReactJS page prevents – or displays warning – when a staff member has more than 2 shifts per day
+- [v] ReactJS page prevents – or displays warning – when a staff member has more than 7 shifts per week
+- [v] ReactJS page prevents – or displays warning – when a staff member is selected to be in two places at once. (eg: UpStairs and Parking Lot)
+- [v] ReactJS page allows randomised population of currently empty shifts, respecting the above rules. At this level, clearing all shifts should be supported too.
+- [v] ReactJS page reports how many staff members are needed to fill all shifts, respecting the above rules.
+- [v] ReactJS page stores current progress at the server (globally)
+- [v] ReactJS page can retrieve current state when re-opened (globally)
 - [] ReactJS page supports undo/redo
