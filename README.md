@@ -1,4 +1,6 @@
 # ISARA Corporation Test
+This repository is ISARA Corporation's test.
+
 
 ## How to start
 
@@ -18,7 +20,7 @@ npm run start
 ```
 
 ## Versions
-
+- Node.js: 18.12.1
 
 ## Todo
 - Express.js
@@ -37,4 +39,19 @@ npm run start
 - [v] ReactJS page reports how many staff members are needed to fill all shifts, respecting the above rules.
 - [v] ReactJS page stores current progress at the server (globally)
 - [v] ReactJS page can retrieve current state when re-opened (globally)
-- [] ReactJS page supports undo/redo
+- [v] ReactJS page supports undo/redo
+
+
+## Folder Directory
+```text
+├─ client/                      # React folder
+│  ├─ dist/                     # API, File name will be path
+│  ├─ public/                   # Data for server
+│  ├─ src/                      # Generate page from serverside
+│  │  ├─ .eslintrc.cjs          # Eslint config.
+│  │  ├─ assets/                # Assets (Videos, fonts ...)
+├─ .gitignore                   # gitignore.
+├─ index.mjs                    # Server main file
+├─ package.json                 # Package.json
+├─ README.md                    # README.md
+```

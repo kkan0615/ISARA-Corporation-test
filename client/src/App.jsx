@@ -8,6 +8,9 @@ function App() {
   /** Edit mode status */
   const [isEditMode, setIsEditMode] = useState(false)
 
+  const [undo, setUndo] = useState(null)
+  const [redo, setRedo] = useState(null)
+
   useEffect(() => {
     initData()
       .catch(console.error)
@@ -19,11 +22,16 @@ function App() {
   const initData = async () => {
     const res = await fetch('/api/load')
     const resJson = await res.json()
-    console.log('run?', resJson)
     setShifts(resJson?.data || [])
   }
 
+  /**
+   * Work: { day: { test: 'test } }
+   * @type {{}}
+   */
   const staffAndWorkMap = useMemo(() => {
+    if (!shifts.length) return {}
+
     const result = {}
     shifts.map(shiftEl => {
       if (!result[shiftEl.staff]) result[shiftEl.staff] = {}
@@ -34,6 +42,8 @@ function App() {
   }, [shifts])
 
   const worksAndStaffMap = useMemo(() => {
+    if (!shifts.length) return {}
+
     const result = {}
     shifts.map(shiftEl => {
       if (!result[shiftEl.work]) result[shiftEl.work] = {}
@@ -45,6 +55,8 @@ function App() {
   }, [shifts])
 
   const clearShift = () => {
+    setUndo(null)
+    setRedo(null)
     setShifts([])
   }
 
@@ -57,12 +69,19 @@ function App() {
     if (foundPrevIndex !== -1) {
       newShifts.splice(foundPrevIndex, 1)
     }
+    const newShift = staff ? {
+      staff,
+      day,
+      work,
+    } : {}
+    setUndo({
+      prev: shifts[foundPrevIndex],
+      new: newShift,
+    })
+    // reset redo
+    setRedo(null)
     if (staff) {
-      newShifts.push({
-        staff,
-        day,
-        work,
-      })
+      newShifts.push(newShift)
     }
     setShifts(newShifts)
     // changeShifts({ work, staff, day })
@@ -77,12 +96,19 @@ function App() {
     if (foundPrevIndex !== -1) {
       newShifts.splice(foundPrevIndex, 1)
     }
+    const newShift = work ? {
+      staff,
+      day,
+      work,
+    } : {}
+    setUndo({
+      prev: shifts[foundPrevIndex],
+      new: newShift,
+    })
+    // reset redo
+    setRedo(null)
     if (work) {
-      newShifts.push({
-        staff,
-        day,
-        work,
-      })
+      newShifts.push(newShift)
     }
     setShifts(newShifts)
   }
@@ -99,7 +125,7 @@ function App() {
    * @return {Promise<void>}
    */
   const saveShift = async () => {
-    const response = await fetch('/api/save', {
+    await fetch('/api/save', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -107,9 +133,41 @@ function App() {
       },
       body: JSON.stringify({ shifts, })
     })
-    const resJson = await response.json()
 
     setIsEditMode(false)
+  }
+
+  const handleUndo = () => {
+    const newShifts = [...shifts]
+    const foundNewIndex = shifts.findIndex(shiftEl => shiftEl.work === undo.new.work && shiftEl.day === undo.new.day && shiftEl.staff === undo.new.staff)
+    console.log('foundNewIndex', foundNewIndex)
+    if (foundNewIndex !== -1) {
+      newShifts.splice(foundNewIndex, 1)
+    }
+
+    if (undo.prev) {
+      newShifts.push(undo.prev)
+    }
+    setRedo(undo)
+    // reset undo
+    setUndo(null)
+    setShifts(newShifts)
+  }
+
+  const handleRedo = () => {
+    const newShifts = [...shifts]
+    const foundPrevIndex = shifts.findIndex(shiftEl => shiftEl.work === redo.prev.work && shiftEl.day === redo.prev.day && shiftEl.staff === redo.prev.staff)
+    if (foundPrevIndex !== -1) {
+      newShifts.splice(foundPrevIndex, 1)
+    }
+
+    if (redo.new) {
+      newShifts.push(redo.new)
+    }
+    setUndo(redo)
+    // reset redo
+    setRedo(null)
+    setShifts(newShifts)
   }
 
   return (
@@ -128,6 +186,22 @@ function App() {
         >
           { isEditMode ? 'Save' : 'Edit' }
         </button>
+        {!!undo &&
+          <button
+            type='button'
+            onClick={handleUndo}
+          >
+            undo
+          </button>
+        }
+        {!!redo &&
+          <button
+            type='button'
+            onClick={handleRedo}
+          >
+            redo
+          </button>
+        }
       </div>
       <div>
         staffAndWorkMap
@@ -138,7 +212,16 @@ function App() {
         {JSON.stringify(worksAndStaffMap, null, 2)}
       </div>
       <div>
+        shifts
         {JSON.stringify(shifts, null, 2)}
+      </div>
+      <div>
+        undo
+        {JSON.stringify(undo, null, 2)}
+      </div>
+      <div>
+        redo
+        {JSON.stringify(redo, null, 2)}
       </div>
       {/* Schedule section */}
       <section>
@@ -229,13 +312,12 @@ function App() {
                   }
                 </td>
               )) }
-              <td width='250px'>{Object.values(staffAndWorkMap[staffEl] || []).join(', ')}</td>
+              <td width='250px'>{ Object.values(staffAndWorkMap[staffEl] || []).join(', ') }</td>
             </tr>
           )) }
           </tbody>
         </table>
       </section>
-
     </div>
   )
 }
