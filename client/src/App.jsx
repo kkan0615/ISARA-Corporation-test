@@ -137,8 +137,12 @@ function App() {
     setIsEditMode(false)
   }
 
+  /**
+   * Undo
+   */
   const handleUndo = () => {
     const newShifts = [...shifts]
+    // Remove new data
     const foundNewIndex = shifts.findIndex(shiftEl => shiftEl.work === undo.new.work && shiftEl.day === undo.new.day && shiftEl.staff === undo.new.staff)
     console.log('foundNewIndex', foundNewIndex)
     if (foundNewIndex !== -1) {
@@ -154,8 +158,12 @@ function App() {
     setShifts(newShifts)
   }
 
+  /**
+   * Redo
+   */
   const handleRedo = () => {
     const newShifts = [...shifts]
+    // Remove previous data
     const foundPrevIndex = shifts.findIndex(shiftEl => shiftEl.work === redo.prev.work && shiftEl.day === redo.prev.day && shiftEl.staff === redo.prev.staff)
     if (foundPrevIndex !== -1) {
       newShifts.splice(foundPrevIndex, 1)
