@@ -1,0 +1,16 @@
+table {
+  width: 100%
+}
+
+th {
+  text-transform: capitalize;
+  padding: 8px;
+}
+
+td {
+  padding: 8px;
+}
+
+h2 {
+  text-align: center;
+}
