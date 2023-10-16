@@ -21,11 +21,12 @@ npm run start
 
 ## Versions
 - Node.js: 18.12.1
+- Express.js: Backend
+- React.js: Frontend
+- Vite: Frontend build
 
 ## Todo
-- Express.js
-- React.js
-- Vite
+
 
 - [v] Self contained .zip file, or link to github code repository containing Javascript and package configuration files to start an ExpressJS server, which serves no content
 - [v] Server serves a ReactJS page which is static, but similar in shape to the above. Components are preferred a single render function building everything.
